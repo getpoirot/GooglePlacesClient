@@ -1,0 +1,20 @@
+{
+    "name": "poirot/google-places-client"
+    , "type": "library"
+    , "authors": [
+        {
+            "name": "Payam Naderi",
+            "email": "naderi.payam@gmail.com",
+            "role": "Developer"
+        }
+    ]
+    , "target-dir": "Poirot/GooglePlaceClient"
+    , "require": {
+        "poirot/std": "dev-master"
+    }
+    , "autoload"  : {
+        "psr-0": {
+            "Poirot\\GooglePlacesClient": "."
+        }
+    }
+}
