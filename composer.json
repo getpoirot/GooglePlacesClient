@@ -9,18 +9,9 @@
         }
     ]
     , "target-dir": "Poirot/GooglePlacesClient"
-    , "require": {
-        "poirot/api-client": "dev-devel"
-    }
     , "autoload"  : {
         "psr-0": {
             "Poirot\\GooglePlacesClient": "."
         }
     }
-    , "repositories": [
-      {
-        "type": "git",
-        "url": "https://github.com/phPoirot/ApiClient.git"
-      }
-    ]
 }
