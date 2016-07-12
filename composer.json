@@ -8,7 +8,7 @@
             "role": "Developer"
         }
     ]
-    , "target-dir": "Poirot/GooglePlaceClient"
+    , "target-dir": "Poirot/GooglePlacesClient"
     , "require": {
         "poirot/std": "dev-master"
     }
