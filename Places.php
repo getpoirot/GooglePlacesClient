@@ -4,7 +4,6 @@ namespace Poirot\GooglePlacesClient;
 use Poirot\ApiClient\aClient;
 use Poirot\ApiClient\Interfaces\iPlatform;
 
-use Poirot\ApiClient\Interfaces\Response\iResponse;
 use Poirot\Connection\Http\ConnectionHttpSocket;
 use Poirot\Connection\Interfaces\iConnection;
 
