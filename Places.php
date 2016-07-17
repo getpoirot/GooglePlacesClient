@@ -78,7 +78,7 @@ class Places
         ($offset   === null) ?: $method->setOffset($offset);
         ($language === null) ?: $method->setLanguage($language);
         ($country  === null) ?: $method->setComponents(array('country' => (string) $country));
-        
+
         return $this->call($method);
     }
 
@@ -95,7 +95,7 @@ class Places
     function platform()
     {
         if (!$this->platform)
-            $this->platform = new Platform();
+            $this->platform = new Platform($this);
         
         return $this->platform;
     }

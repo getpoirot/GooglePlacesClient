@@ -65,11 +65,7 @@ class Platform
      */
     function makeExpression(iApiMethod $method)
     {
-        if (!$method instanceof ReqMethod)
-            throw new \InvalidArgumentException(sprintf(
-                'Method must be instance of Reservation\ReqMethod, "%s" given.'
-                , \Poirot\Std\flatten($method)
-            ));
+        kd($method);
 
 
         # make expression
