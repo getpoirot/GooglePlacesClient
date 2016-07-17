@@ -11,6 +11,16 @@ use Poirot\GooglePlacesClient\Method\AutoComplete;
 use Poirot\Std\Interfaces\Pact\ipOptionsProvider;
 use Poirot\Std\Interfaces\Struct\iDataOptions;
 
+/*
+$places = new P\GooglePlacesClient\Places(
+    (new P\GooglePlacesClient\PlacesOptions())
+        ->setKey('xxxxxxxx')
+);
+
+$res = $places->getAutocomplete('آذربایجان');
+*/
+
+
 class Places
     extends aClient
     implements ipOptionsProvider
