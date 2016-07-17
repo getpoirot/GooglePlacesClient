@@ -118,7 +118,7 @@ class Platform
         $parsedHeader = \Poirot\Connection\Http\parseResponseHeaders($response->header);
 
         if ($parsedHeader['status'] !== 200)
-            // handle errors
+            // TODO handle errors
             VOID;
 
         # filter body content
@@ -145,20 +145,19 @@ class Platform
         # make response:
 
         $body = $stream->read();
-
-        kd($body);
-
+        $bodyParsed = json_decode($body, true);
+        
         // TODO handle exceptions
 
-        $response  = new ResponseOfClient([
-            'meta'     => Util::parseResponseHeaders($response->header),
+        $response  = new ResponseOfClient(array(
+            'meta'     => \Poirot\Connection\Http\parseResponseHeaders($response->header),
             'raw_body' => $body,
 
             ## get response message as array
-            'default_expected' => function($xmlString) use ($parsedRes) {
-                return $parsedRes['Body'];
+            'default_expected' => function($body) use ($bodyParsed) {
+                return $bodyParsed;
             }
-        ]);
+        ));
 
         return $response;
     }
