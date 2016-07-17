@@ -1,5 +1,5 @@
 <?php
-namespace Poirot\GooglePlaceClient;
+namespace Poirot\GooglePlacesClient;
 
 use Poirot\Std\Struct\aDataOptions;
 

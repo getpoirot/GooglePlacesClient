@@ -1,5 +1,5 @@
 <?php
-namespace Poirot\GooglePlaceClient;
+namespace Poirot\GooglePlacesClient\Method;
 
 use Poirot\ApiClient\Request\Method;
 
@@ -65,6 +65,7 @@ class AutoComplete
 
         $merged = array();
 
+        $input      = $this->getInput();
         $types      = $this->getTypes();
         $location   = $this->getLocation();
         $radius     = $this->getRadius();
@@ -72,12 +73,13 @@ class AutoComplete
         $language   = $this->getLanguage();
         $components = $this->getComponents();
 
-        ($types    === null)   ?: $merged['types']    = $types;
-        ($location === null)   ?: $merged['location'] = $location;
-        ($radius   === null)   ?: $merged['radius']   = $radius;
-        ($offset   === null)   ?: $merged['offset']   = $offset;
-        ($language === null)   ?: $merged['language'] = $language;
-        ($components === null) ?: $merged['components'] = $components;
+        ($input    === null) ?: $merged['input']    = $input;
+        ($types    === null) ?: $merged['types']    = $types;
+        ($location === null) ?: $merged['location'] = $location;
+        ($radius   === null) ?: $merged['radius']   = $radius;
+        ($offset   === null) ?: $merged['offset']   = $offset;
+        ($language === null) ?: $merged['language'] = $language;
+        (empty($components)) ?: $merged['components'] = $components;
 
         $args = array_merge($args, $merged);
         return $args;

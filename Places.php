@@ -1,5 +1,5 @@
 <?php
-namespace Poirot\GooglePlaceClient;
+namespace Poirot\GooglePlacesClient;
 
 use Poirot\ApiClient\aClient;
 use Poirot\ApiClient\Interfaces\iPlatform;
@@ -8,6 +8,7 @@ use Poirot\ApiClient\Interfaces\Response\iResponse;
 use Poirot\Connection\Http\ConnectionHttpSocket;
 use Poirot\Connection\Interfaces\iConnection;
 
+use Poirot\GooglePlacesClient\Method\AutoComplete;
 use Poirot\Std\Interfaces\Pact\ipOptionsProvider;
 use Poirot\Std\Interfaces\Struct\iDataOptions;
 

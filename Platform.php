@@ -1,7 +1,6 @@
 <?php
-namespace Poirot\GooglePlaceClient;
+namespace Poirot\GooglePlacesClient;
 
-use Poirot\ApiClient\Request\Method;
 use Poirot\ApiClient\ResponseOfClient;
 use Poirot\Connection\Http\ConnectionHttpSocket;
 use Poirot\Connection\Http\StreamFilter\DechunkFilter;
@@ -10,6 +9,7 @@ use Poirot\Stream\Interfaces\iStreamable;
 use Poirot\ApiClient\Interfaces\iPlatform;
 use Poirot\ApiClient\Interfaces\Request\iApiMethod;
 use Poirot\ApiClient\Interfaces\Response\iResponse;
+use Poirot\Stream\Streamable\STemporary;
 
 class Platform 
     implements iPlatform
@@ -17,7 +17,7 @@ class Platform
     /** @var Places */
     protected $_client;
 
-    protected $server = 'https://maps.googleapis.com/maps/api/place';
+    protected $server = 'http://maps.googleapis.com/maps/api/place';
 
 
     /**
@@ -59,71 +59,32 @@ class Platform
      * Build Platform Specific Expression To Send
      * Trough Transporter
      *
-     * @param Method $method Method Interface
+     * @param iApiMethod $method Method Interface
      *
      * @return mixed
      */
     function makeExpression(iApiMethod $method)
     {
-        kd($method);
-
-
-        # make expression
-
-        $_f__makeArgs = function($arguments) use (&$_f__makeArgs) {
-            $bodyArgs = '';
-            foreach($arguments as $key => $val)
-            {
-                if (is_array($val)) {
-                    if (array_values($val) !== $val /* is associate array */) {
-                        $bodyArgs .= "<{$key}>".$_f__makeArgs($val)."</{$key}>";
-                    } else {
-                        /*
-                         * <HotelIds>
-                         *  <HotelId>1009075</HotelId>
-                         *  <HotelId>1000740</HotelId>
-                         *  .....
-                         */
-                        foreach($val as $v)
-                            $bodyArgs .= "<{$key}>".$v."</{$key}>";
-                    }
-                } else {
-                    $bodyArgs .= "<{$key}>".$val."</{$key}>";
-                }
-            }
-
-            return $bodyArgs;
-        };
-
-        $elementBody = $_f__makeArgs($method->getArguments());
-        $elementBody = ($elementBody !== '') ? '<Body>'.$elementBody.'</Body>' : '<Body/>';
-        $reqBody     =
-            '<Request>'
-                .'<Head>'
-                    .'<Username>'.$method->getUsername().'</Username>'
-                    .'<Password>'.$method->getPassword().'</Password>'
-                    .'<RequestType>'.ucfirst($method->getRequestType()).'</RequestType>'
-                .'</Head>'
-                .$elementBody
-            .'</Request>';
-
         ## build request object
-        $serverUrl  = $this->client->optsData()->getServerUrl();
+        $serverUrl  = $this->server;
         $parsSrvUrl = parse_url($serverUrl);
 
-        $path = (isset($parsSrvUrl['path'])) ? ltrim($parsSrvUrl['path'], '/') : '';
-        $host = strtolower($parsSrvUrl['host']);
-        $body = http_build_query(['xml' => $reqBody], null, '&');
-        $request = 'POST /'. $path. $this->__getRequestUriByMethodName($method->getRequestType()). ' HTTP/1.1'."\r\n"
+        $key = $this->_client->optsData()->getKey();
+
+        $path    = (isset($parsSrvUrl['path'])) ? ltrim($parsSrvUrl['path'], '/') : '';
+        $host    = strtolower($parsSrvUrl['host']);
+        $qparams = '?'.http_build_query(array_merge(array('key'=>$key), $method->getArguments()), null, '&');
+
+        $request = 'GET /'. $path. $this->__getRequestUriByMethodName($method->getMethod()).$qparams. ' HTTP/1.1'."\r\n"
             . 'Host: '.$host."\r\n"
-            . 'User-Agent: AranRojan-PHP/'.PHP_VERSION."\r\n"
+            . 'User-Agent: GooglePlaces-Poirot-PHP/'.PHP_VERSION."\r\n"
             ### enable compression if has enabled
-            . (($this->client->optsData()->isEnableCompression()) ? 'Accept-Encoding: gzip'."\r\n" : '')
+//            . (($this->client->optsData()->isEnableCompression()) ? 'Accept-Encoding: gzip'."\r\n" : '')
             ### post method need request header with Content-Length
-            . 'Content-Length: '.strlen($body)."\r\n"
-            . 'Content-Type: application/x-www-form-urlencoded'."\r\n"
+//            . 'Content-Length: '.strlen($body)."\r\n"
             . "\r\n"
-            . $body;
+//            . $body
+        ;
 
         return $request;
     }
@@ -141,7 +102,7 @@ class Platform
      */
     function makeResponse($response)
     {
-        $parsedHeader = Util::parseResponseHeaders($response->header);
+        $parsedHeader = \Poirot\Connection\Http\parseResponseHeaders($response->header);
 
         if ($parsedHeader['status'] !== 200)
             // handle errors
@@ -157,27 +118,28 @@ class Platform
         ) {
             // Response Body Contain Compressed Data and Must Decompressed.
             // We are using stream deflate filter
-            $stream->getResource()->prependFilter(DechunkFilter::factory(), STREAM_FILTER_READ);
+            $stream->resource()->prependFilter(DechunkFilter::factory(), STREAM_FILTER_READ);
         }
 
         if (
             isset($parsedHeader['headers']['Content-Encoding'])
             && $parsedHeader['headers']['Content-Encoding'] == 'gzip'
         ) {
-            $stream = new TemporaryStream(gzinflate(substr($stream->read(), 10)));
+            $stream = new STemporary(gzinflate(substr($stream->read(), 10)));
             $stream->rewind();
         }
 
         # make response:
 
-        $xmlString = $stream->read();
-        $parsedRes = $this->xmlstr_to_array($xmlString);
+        $body = $stream->read();
+
+        kd($body);
 
         // TODO handle exceptions
 
         $response  = new ResponseOfClient([
             'meta'     => Util::parseResponseHeaders($response->header),
-            'raw_body' => $xmlString,
+            'raw_body' => $body,
 
             ## get response message as array
             'default_expected' => function($xmlString) use ($parsedRes) {
