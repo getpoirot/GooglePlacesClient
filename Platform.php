@@ -147,8 +147,6 @@ class Platform
         $body = $stream->read();
         $bodyParsed = json_decode($body, true);
         
-        // TODO handle exceptions
-
         $response  = new ResponseOfClient(array(
             'meta'     => \Poirot\Connection\Http\parseResponseHeaders($response->header),
             'raw_body' => $body,
@@ -158,6 +156,13 @@ class Platform
                 return $bodyParsed;
             }
         ));
+
+        if ($bodyParsed['status'] !== 'OK') {
+            ## there is error
+            $message = (isset($bodyParsed['error_message'])) ? $bodyParsed['error_message'] : '';
+            $message = rtrim($bodyParsed['status'].': '.$message, ': ');
+            $response->setException(new \Exception($message, 0));
+        }
 
         return $response;
     }
