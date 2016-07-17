@@ -60,7 +60,8 @@ class Places
      *                              ISO 3166-1 Alpha-2 compatible country code.
      *                              exp. fr
      *
-     * @return iResponse
+     * @return array
+     * @throws \Exception
      */
     function getAutocomplete($input
         , $types = null
@@ -80,7 +81,12 @@ class Places
         ($language === null) ?: $method->setLanguage($language);
         ($country  === null) ?: $method->setComponents(array('country' => (string) $country));
 
-        return $this->call($method);
+        $res = $this->call($method);
+        if ($ex = $res->hasException())
+            throw $ex;
+
+        $r = $res->expected();
+        return $r['predictions'];
     }
 
     // ...
