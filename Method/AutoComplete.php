@@ -10,8 +10,8 @@ class AutoComplete
     const TYPE_GEOCODE = 'geocode';
     const TYPE_ADDRESS = 'address';
     const TYPE_ESTABLISHMENT = 'establishment';
-    const TYPE_REGIONS = 'regions';
-    const TYPE_CITIES = 'cities';
+    const TYPE_REGIONS = '(regions)';
+    const TYPE_CITIES = '(cities)';
 
 
     protected $input;

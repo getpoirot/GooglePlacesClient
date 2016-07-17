@@ -17,7 +17,7 @@ class Platform
     /** @var Places */
     protected $_client;
 
-    protected $server = 'http://maps.googleapis.com/maps/api/place';
+    protected $server = 'https://maps.googleapis.com/maps/api/place';
 
 
     /**
@@ -73,7 +73,20 @@ class Platform
 
         $path    = (isset($parsSrvUrl['path'])) ? ltrim($parsSrvUrl['path'], '/') : '';
         $host    = strtolower($parsSrvUrl['host']);
-        $qparams = '?'.http_build_query(array_merge(array('key'=>$key), $method->getArguments()), null, '&');
+
+
+        $args    = $method->getArguments();
+        if (isset($args['components'])) {
+            // components=country:fr
+            $components = array();
+            foreach ($args['components'] as $k => $v)
+                $components[] = $k.':'.$v;
+
+            $args['components'] = implode('|', $components);
+        }
+
+        $qparams = '?'.http_build_query(array_merge(array('key'=>$key), $args), null, '&');
+
 
         $request = 'GET /'. $path. $this->__getRequestUriByMethodName($method->getMethod()).$qparams. ' HTTP/1.1'."\r\n"
             . 'Host: '.$host."\r\n"
