@@ -13,8 +13,5 @@
         "psr-0": {
             "Poirot\\GooglePlacesClient": "."
         }
-        , "files": [
-            "_functions.php"
-        ]
     }
 }
