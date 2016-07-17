@@ -157,7 +157,7 @@ class Platform
             }
         ));
 
-        if ($bodyParsed['status'] !== 'OK') {
+        if ($bodyParsed['status'] !== 'OK' && $bodyParsed['status'] !== 'ZERO_RESULTS') {
             ## there is error
             $message = (isset($bodyParsed['error_message'])) ? $bodyParsed['error_message'] : '';
             $message = rtrim($bodyParsed['status'].': '.$message, ': ');
