@@ -7,7 +7,7 @@ use Poirot\ApiClient\Interfaces\iPlatform;
 use Poirot\Connection\Http\ConnectionHttpSocket;
 use Poirot\Connection\Interfaces\iConnection;
 
-use Poirot\GooglePlacesClient\Method\AutoComplete;
+use Poirot\GooglePlacesClient\Command\AutoComplete;
 use Poirot\Std\Interfaces\Pact\ipOptionsProvider;
 use Poirot\Std\Interfaces\Struct\iDataOptions;
 

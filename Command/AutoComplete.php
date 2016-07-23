@@ -1,10 +1,10 @@
 <?php
-namespace Poirot\GooglePlacesClient\Method;
+namespace Poirot\GooglePlacesClient\Command;
 
-use Poirot\ApiClient\Request\Method;
+use Poirot\ApiClient\Request\Command;
 
 class AutoComplete 
-    extends Method
+    extends Command
 {
     /** @link https://developers.google.com/places/web-service/autocomplete#place_types */
     const TYPE_GEOCODE = 'geocode';
